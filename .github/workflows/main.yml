@@ -1,0 +1,23 @@
+name: Build
+on: 
+  workflow_dispatch:
+ 
+jobs:
+ node-1:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+         os: [ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest]
+    timeout-minutes: 2
+ 
+    steps:
+      - uses: actions/checkout@v4
+      - run: mkdir runner
+      - name: Setup App
+        working-directory: ./runner
+        run: |
+              nproc
+              free -h
+              sleep 5m
+        shell: bash
